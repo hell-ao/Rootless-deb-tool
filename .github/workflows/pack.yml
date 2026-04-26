@@ -1,4 +1,4 @@
-name: 转换无根deb
+name: 只下载deb到仓库
 on:
   workflow_dispatch:
 
@@ -8,19 +8,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # 👇 这行自动从 Release 下载你的大 deb（不受25MB限制）
-      - name: 下载AutoTouch破解版
-        run: wget -O autotouch.deb "https://github.com/hell-ao/Rootless-deb-tool/releases/download/vv1.0/14697.deb"
+      # 👇 自动从 Release 下载 deb 到仓库根目录
+      - name: 下载AutoTouch到仓库根目录
+        run: wget -O AutoTouch7.0.33k.deb "https://github.com/hell-ao/Rootless-deb-tool/releases/download/vv1.0/14697.deb"
 
-      # 👇 转换无根（自动加 /var/jb 路径）
-      - name: 转换无根格式
+      # 👇 直接把下载好的文件提交回仓库
+      - name: 保存文件到仓库
         run: |
-          chmod +x pack_cross_deb.sh
-          ./pack_cross_deb.sh
-
-      # 👇 输出转换好的无根 deb
-      - name: 上传成品
-        uses: actions/upload-artifact@v4
-        with:
-          name: rootless-deb
-          path: "*.deb"
+          git config --global user.name "github-actions"
+          git config --global user.email "actions@github.com"
+          git add AutoTouch7.0.33k.deb
+          git commit -m "Add deb from release"
+          git push
