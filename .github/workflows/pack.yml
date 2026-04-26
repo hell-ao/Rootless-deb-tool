@@ -1,0 +1,26 @@
+name: 转换无根deb
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # 👇 这行自动从 Release 下载你的大 deb（不受25MB限制）
+      - name: 下载AutoTouch破解版
+        run: wget -O autotouch.deb "https://github.com/hell-ao/Rootless-deb-tool/releases/download/vv1.0/14697.deb"
+
+      # 👇 转换无根（自动加 /var/jb 路径）
+      - name: 转换无根格式
+        run: |
+          chmod +x pack_cross_deb.sh
+          ./pack_cross_deb.sh
+
+      # 👇 输出转换好的无根 deb
+      - name: 上传成品
+        uses: actions/upload-artifact@v4
+        with:
+          name: rootless-deb
+          path: "*.deb"
